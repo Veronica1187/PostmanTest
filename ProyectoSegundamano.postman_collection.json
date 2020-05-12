@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "cdde5f62-fc28-4aa4-bede-f1f60ff6e7d0",
+		"_postman_id": "194477b4-b450-4d6e-9f70-52245a7ba6e1",
 		"name": "ProyectoSegundamano",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -11,7 +11,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "e3a14c24-06d1-44aa-b96b-c050528d82b2",
+						"id": "2700a360-81ae-40c7-af64-1efbd51eea35",
 						"exec": [
 							"console.log(pm.response);",
 							"console.log(pm.response.code);",
@@ -25,10 +25,10 @@
 							"postman.setEnvironmentVariable(\"account_id\", jsonData.account.account_id);",
 							"postman.setEnvironmentVariable(\"name\", jsonData.account.name);",
 							"postman.setEnvironmentVariable(\"uuid\", jsonData.account.uuid);",
+							"postman.setEnvironmentVariable(\"email\", jsonData.account.email);",
 							"",
 							"console.log(\"account_id\", jsonData.account.account_id);",
 							"console.log(\"Token\", jsonData.access_token);",
-							"console.log(\"name\", jsonData.account.name);",
 							"console.log(\"uuid\", jsonData.account.uuid);",
 							"",
 							"let messageString = jsonData.account.account_id;",
@@ -37,37 +37,32 @@
 							"",
 							"",
 							"",
-							"",
-							"",
-							"",
-							"",
-							"",
-							"pm.test(\"Test - La respuesta regresa un body\", function () {   ",
+							"pm.test(\"Test - La respuesta regresa un body\", function () {",
 							"    pm.response.to.be.withBody;",
 							"});",
 							"",
-							"pm.test(\"Test -  la respuesta es un JSON valido\", function () { ",
+							"pm.test(\"Test -  la respuesta es un JSON valido\", function () {",
 							"    pm.response.to.be.json;",
 							"});",
 							"",
 							"",
-							" pm.test(\"Validar estatus Created\", function() {",
-							"        pm.expect(pm.response.code).to.eq(201);",
-							" });",
-							" ",
-							" pm.test(\"Validar nombre Usuario\", function() {",
-							"    pm.expect(pm.response.text()).to.include(\"usuario33\");",
-							"    });",
-							"    ",
-							"      ",
-							"pm.test(\"Validar email de Usuario\", function() {",
-							"    pm.expect(jsonData.account.email).to.eq(\"usuario33@mailinator.com\");",
-							"    });",
-							"    ",
-							"    ",
-							"pm.test(\"Validar Token Type\", function() {",
+							"pm.test(\"Validar estatus Created\", function () {",
+							"    pm.expect(pm.response.code).to.eq(201);",
+							"});",
+							"",
+							"pm.test(\"Validar nombre Usuario\", function () {",
+							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"name\"));",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validar email de Usuario\", function () {",
+							"    pm.expect(jsonData.account.email).to.eq(pm.environment.get(\"email\"));",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validar Token Type\", function () {",
 							"    pm.expect(jsonData.token_type).to.eq(\"tag:scmcoord.com,2013:api\");",
-							"    });"
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -75,12 +70,12 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "dd5d125f-f936-4f6b-b94c-81f4681232d3",
+						"id": "d1feec52-34fc-40dd-8ecc-732c066bbb9b",
 						"exec": [
 							"let user = \"agente\" + (Math.floor(Math.random() * 7685) + 3) + \"@ventas.com\";",
 							"let pass = (Math.floor(Math.random() * 57684) * 1000);",
 							"",
-							"console.log(user,pass);",
+							"console.log(user, pass);",
 							"pm.environment.set(\"email\", user);",
 							"",
 							"let encodedKeys = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(user + \":\" + pass));",
@@ -158,7 +153,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "debcb0fb-8baa-4c5e-b589-849059c639d5",
+						"id": "c1d6a9bf-cc99-4eeb-a429-8896f6ee91f7",
 						"exec": [
 							"texto = Math.random().toString(36).substring(2,15)+ Math.random().toString(36).substring(2,15);",
 							"const ventas = \" \" + texto;",
@@ -193,24 +188,28 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "3a3c9305-3ef0-4206-bae6-6680de4c7f2a",
+						"id": "e5853b9a-9391-4ce9-a043-e3a4761475c7",
 						"exec": [
-							"var jsonData = pm.response;",
-							"pm.environment.set('id_anuncio', jsonData.json().action.action_id.split(\"/\")[5]);",
-							"pm.variables.set('id_anuncio', jsonData.json().action.action_id.split(\"/\")[5]);",
+							"var jsonData = pm.response.json()",
+							"console.log((jsonData.action.action_id).split(\"/\")[5])",
+							"//pm.environment.set('id_anuncio', jsonData.action.action_id.split(\"/\")[5]); no esta guardando la variable id_anuncio ",
+							"//pm.variables.set('id_anuncio', jsonData.action.action_id.split(\"/\")[5]); no esta guardando la variable id_anuncio",
 							"",
-							"pm.test(\"Test - La respuesta regresa un body\", function () {   ",
+							"pm.environment.set(\"Id_anuncio\", (jsonData.action.action_id).split(\"/\")[5])",
+							"pm.variables.set(\"Id_anuncio\", (jsonData.action.action_id).split(\"/\")[5])",
+							"",
+							"pm.test(\"Test - La respuesta regresa un body\", function () {",
 							"    pm.response.to.be.withBody;",
 							"});",
 							"",
-							"pm.test(\"Test -  la respuesta es un JSON valido\", function () { ",
+							"pm.test(\"Test -  la respuesta es un JSON valido\", function () {",
 							"    pm.response.to.be.json;",
 							"});",
 							"",
 							"",
-							" pm.test(\"Validar valor status Created\", function() {",
-							"        pm.expect(pm.response.code).to.eq(201);",
-							" });"
+							"pm.test(\"Validar valor status Created\", function () {",
+							"    pm.expect(pm.response.code).to.eq(201);",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -294,53 +293,6 @@
 			"response": []
 		},
 		{
-			"name": "Borrar anuncio",
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "tag:scmcoord.com,2013:api {{token}}",
-						"type": "text"
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json;charset=UTF-8",
-						"type": "text"
-					},
-					{
-						"key": "Origin",
-						"value": "https://www.segundamano.mx",
-						"type": "text"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json, text/plain, */*",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"delete_reason\":{\"code\":\"5\"}}"
-				},
-				"url": {
-					"raw": "https://{{base_url}}/nga/api/v1{{account_id}}/klfst/{{AdId}}",
-					"protocol": "https",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"nga",
-						"api",
-						"v1{{account_id}}",
-						"klfst",
-						"{{AdId}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Lista Anuncios",
 			"request": {
 				"method": "GET",
@@ -400,7 +352,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "579f3c80-c4a6-4aa0-97f9-73fe3b4b0400",
+						"id": "98b26953-2598-40d6-9acb-404e4007351e",
 						"exec": [
 							"//Una forma de crear numeros",
 							"//pm.environment.set(\"phone\",( (Math.floor(Math.random() * 53967683) + 1 ) + (Math.floor(Math.random() * 766855798) + 1)));",
@@ -456,7 +408,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "d3bc59cd-69cd-46f1-b522-8e351e4f8015",
+						"id": "78f6e373-5bcf-48bc-b358-c22df602b938",
 						"exec": [
 							"var Token = pm.environment.get('token');",
 							"var uid = pm.environment.get('uuid');",
@@ -474,7 +426,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "34e88db2-f436-4b15-9af0-fbeb430da50e",
+						"id": "e8ff6a2d-067c-4764-8368-754bdb82c334",
 						"exec": [
 							" pm.test(\"Validar valor status Created\", function() {",
 							"        pm.expect(pm.response.code).to.eq(201);",
@@ -564,7 +516,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "d14f8f28-6241-4030-a039-77ae67652a40",
+						"id": "0444c06d-b666-4357-aa24-599273f836ea",
 						"exec": [
 							"var Token = pm.environment.get('token');",
 							"var uid = pm.environment.get('uuid');",
@@ -582,7 +534,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "5130b914-d148-402b-ad86-adc67eb074aa",
+						"id": "0942b9b0-b568-4d89-abd6-956a381b2cbe",
 						"exec": [
 							"pm.test(\"\", function(){",
 							"  pm.response.to.have.status(200);  ",
@@ -630,7 +582,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "8b533bdf-24c5-4df3-af14-f21a9ccc1860",
+						"id": "2d33f2c9-da15-40fe-8573-eac26267ddf8",
 						"exec": [
 							"texto = Math.random().toString(36).substring(2,15)+ Math.random().toString(36).substring(2,15);",
 							"const ventas = \" \" + texto;",
@@ -758,7 +710,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "0b117c0e-c5ec-4529-81a2-1290193cba17",
+						"id": "ca7146b5-9055-40f6-b4a7-5430f90d8ebd",
 						"exec": [
 							"",
 							" pm.test(\"Validar valor status Not Found\", function() {",
@@ -803,7 +755,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "63354ccb-a08f-4488-a0df-cb2fbe958c7f",
+						"id": "5a717eb7-ffee-4ce3-8d92-a3c8b3b66bad",
 						"exec": [
 							"",
 							" pm.test(\"Validar status Unauthorized\", function() {",
@@ -839,13 +791,60 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Borrar anuncio",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "tag:scmcoord.com,2013:api {{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json;charset=UTF-8",
+						"type": "text"
+					},
+					{
+						"key": "Origin",
+						"value": "https://www.segundamano.mx",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"delete_reason\":{\"code\":\"5\"}}"
+				},
+				"url": {
+					"raw": "https://{{base_url}}/nga/api/v1{{account_id}}/klfst/{{AdId}}",
+					"protocol": "https",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"nga",
+						"api",
+						"v1{{account_id}}",
+						"klfst",
+						"{{AdId}}"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "10dbab66-1a43-44ab-bd98-fec8bd317c6e",
+				"id": "8fe1e872-6313-43d4-b678-e40fc81fdaf7",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -855,7 +854,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "6a980f6d-f6dd-4154-84dc-1a6506b84a62",
+				"id": "276a260e-868c-4068-98f5-766d97031b04",
 				"type": "text/javascript",
 				"exec": [
 					""
